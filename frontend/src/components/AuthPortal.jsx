@@ -1,182 +1,294 @@
 import { useState } from 'react';
-import { useAuth } from '../context/AuthContext';
-import { Mail, Lock, Link2, AlertCircle } from 'lucide-react';
+
+import { useNavigate } from 'react-router-dom';
+
+import { useAuth } from '../context/useAuth';
+
+import {
+  Mail,
+  Lock,
+  Link2,
+  AlertCircle,
+} from 'lucide-react';
 
 export default function AuthPortal() {
+
   const { login, signup } = useAuth();
+
+  const navigate = useNavigate();
+
   const [isLogin, setIsLogin] = useState(true);
+
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  
+
   // Loading & Error states
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
 
+  // Submit Handler
   const handleSubmit = async (e) => {
+
     e.preventDefault();
+
     setError('');
-    
+
     // Front-end validations
     if (!email || !password) {
-      setError('Please fill in all email and password fields.');
+      setError(
+        'Please fill in all email and password fields.'
+      );
       return;
     }
+
     if (!email.includes('@')) {
-      setError('Please enter a valid email address.');
+      setError(
+        'Please enter a valid email address.'
+      );
       return;
     }
+
     if (password.length < 6) {
-      setError('Password must be at least 6 characters long.');
+      setError(
+        'Password must be at least 6 characters long.'
+      );
       return;
     }
 
     setLoading(true);
+
     try {
+
+      // Fake Login / Signup
       if (isLogin) {
+
         await login(email, password);
+
       } else {
+
         await signup(email, password);
+
       }
+
+      // Redirect to Dashboard
+      navigate('/');
+
     } catch (err) {
-      setError(err.message || 'An error occurred. Please try again.');
+
+      console.error(err);
+
+      setError(
+        err.message ||
+        'An error occurred. Please try again.'
+      );
+
     } finally {
+
       setLoading(false);
+
     }
   };
 
   return (
-    <div className="bg-wix-grid relative flex min-h-screen items-center justify-center px-4 py-12 sm:px-6 lg:px-8 overflow-hidden bg-[#F9F9FA]">
-      
-      {/* Decorative premium floating gradient backdrop */}
+    <div className="bg-wix-grid relative flex min-h-screen items-center justify-center overflow-hidden bg-[#F9F9FA] px-4 py-12 sm:px-6 lg:px-8">
+
+      {/* Decorative Background */}
       <div className="absolute top-1/4 left-1/4 -z-10 h-72 w-72 rounded-full bg-gradient-to-tr from-pink-400 via-teal-300 to-blue-500 opacity-20 blur-3xl" />
+
       <div className="absolute bottom-1/4 right-1/4 -z-10 h-80 w-80 rounded-full bg-gradient-to-tr from-purple-400 to-indigo-500 opacity-15 blur-3xl" />
 
       <div className="w-full max-w-md space-y-6">
-        
-        {/* Main Logo Display */}
+
+        {/* Logo */}
         <div className="flex flex-col items-center text-center">
+
           <div className="flex h-12 w-12 items-center justify-center rounded bg-[#0057FF] text-white shadow-sm">
             <Link2 className="h-6 w-6 stroke-[2.5]" />
           </div>
+
           <h2 className="mt-4 text-2xl font-extrabold tracking-tight text-[#111111]">
             SHORTX
           </h2>
+
           <p className="mt-1.5 text-[13px] text-[#666666]">
             Wix Studio Enterprise Custom Link Manager
           </p>
+
         </div>
 
-        {/* Auth Card */}
-        <div className="bg-white border border-[#EAEAEA] p-8 rounded-lg shadow-sm">
-          
-          {/* Animated Tab Switcher */}
+        {/* Card */}
+        <div className="rounded-lg border border-[#EAEAEA] bg-white p-8 shadow-sm">
+
+          {/* Tabs */}
           <div className="mb-6 flex border-b border-[#EAEAEA]">
+
             <button
               onClick={() => {
                 setIsLogin(true);
                 setError('');
               }}
-              className={`flex-1 pb-3 text-center text-xs font-bold tracking-wider uppercase transition-all duration-200 ${
-                isLogin 
-                  ? 'border-b-2 border-[#0057FF] text-[#0057FF]' 
+              className={`flex-1 pb-3 text-center text-xs font-bold uppercase tracking-wider transition-all duration-200 ${
+                isLogin
+                  ? 'border-b-2 border-[#0057FF] text-[#0057FF]'
                   : 'text-gray-400 hover:text-[#111111]'
               }`}
             >
               Sign In
             </button>
+
             <button
               onClick={() => {
                 setIsLogin(false);
                 setError('');
               }}
-              className={`flex-1 pb-3 text-center text-xs font-bold tracking-wider uppercase transition-all duration-200 ${
-                !isLogin 
-                  ? 'border-b-2 border-[#0057FF] text-[#0057FF]' 
+              className={`flex-1 pb-3 text-center text-xs font-bold uppercase tracking-wider transition-all duration-200 ${
+                !isLogin
+                  ? 'border-b-2 border-[#0057FF] text-[#0057FF]'
                   : 'text-gray-400 hover:text-[#111111]'
               }`}
             >
               Create Account
             </button>
+
           </div>
 
-          {/* Validation Alert Area */}
+          {/* Error */}
           {error && (
-            <div className="mb-4 flex items-start space-x-2.5 border border-red-200 bg-red-50 p-3.5 text-red-800 rounded-md">
+            <div className="mb-4 flex items-start space-x-2.5 rounded-md border border-red-200 bg-red-50 p-3.5 text-red-800">
+
               <AlertCircle className="mt-0.5 h-4.5 w-4.5 shrink-0 text-red-600" />
-              <div className="text-[12px] font-medium leading-relaxed">{error}</div>
+
+              <div className="text-[12px] font-medium leading-relaxed">
+                {error}
+              </div>
+
             </div>
           )}
 
           {/* Form */}
-          <form className="space-y-4" onSubmit={handleSubmit}>
+          <form
+            className="space-y-4"
+            onSubmit={handleSubmit}
+          >
+
+            {/* Email */}
             <div>
-              <label className="block text-[11px] font-bold uppercase tracking-wider text-[#111111] mb-1.5">
+
+              <label className="mb-1.5 block text-[11px] font-bold uppercase tracking-wider text-[#111111]">
                 Email Address
               </label>
+
               <div className="relative">
+
                 <div className="absolute inset-y-0 left-0 flex items-center pl-3">
                   <Mail className="h-4 w-4 text-gray-400" />
                 </div>
+
                 <input
                   type="email"
                   required
                   value={email}
-                  onChange={(e) => setEmail(e.target.value)}
+                  onChange={(e) =>
+                    setEmail(e.target.value)
+                  }
                   placeholder="name@company.com"
                   className="w-full rounded-md border border-[#EAEAEA] bg-[#F9F9FA] py-2 pl-9 pr-3 text-[13px] text-[#111111] placeholder-gray-400 transition-all duration-200 focus:border-gray-400 focus:bg-white focus:outline-none"
                 />
+
               </div>
+
             </div>
 
+            {/* Password */}
             <div>
-              <label className="block text-[11px] font-bold uppercase tracking-wider text-[#111111] mb-1.5">
+
+              <label className="mb-1.5 block text-[11px] font-bold uppercase tracking-wider text-[#111111]">
                 Password
               </label>
+
               <div className="relative">
+
                 <div className="absolute inset-y-0 left-0 flex items-center pl-3">
                   <Lock className="h-4 w-4 text-gray-400" />
                 </div>
+
                 <input
                   type="password"
                   required
                   value={password}
-                  onChange={(e) => setPassword(e.target.value)}
+                  onChange={(e) =>
+                    setPassword(e.target.value)
+                  }
                   placeholder="••••••••"
                   className="w-full rounded-md border border-[#EAEAEA] bg-[#F9F9FA] py-2 pl-9 pr-3 text-[13px] text-[#111111] placeholder-gray-400 transition-all duration-200 focus:border-gray-400 focus:bg-white focus:outline-none"
                 />
+
               </div>
+
               <p className="mt-1.5 text-[10px] text-[#666666]">
                 Must be at least 6 characters.
               </p>
+
             </div>
 
-            {/* Submit Button */}
+            {/* Submit */}
             <button
               type="submit"
               disabled={loading}
-              className="mt-6 w-full flex items-center justify-center rounded-md bg-[#0057FF] py-2.5 text-xs font-bold uppercase tracking-wider text-white transition-all duration-200 hover:bg-[#0046CC] disabled:opacity-70 focus:outline-none"
+              className="mt-6 flex w-full items-center justify-center rounded-md bg-[#0057FF] py-2.5 text-xs font-bold uppercase tracking-wider text-white transition-all duration-200 hover:bg-[#0046CC] disabled:opacity-70 focus:outline-none"
             >
+
               {loading ? (
                 <div className="flex items-center space-x-2">
-                  <svg className="h-4 w-4 animate-spin text-white" fill="none" viewBox="0 0 24 24">
-                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+
+                  <svg
+                    className="h-4 w-4 animate-spin text-white"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                  >
+
+                    <circle
+                      className="opacity-25"
+                      cx="12"
+                      cy="12"
+                      r="10"
+                      stroke="currentColor"
+                      strokeWidth="4"
+                    />
+
+                    <path
+                      className="opacity-75"
+                      fill="currentColor"
+                      d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                    />
+
                   </svg>
+
                   <span>Processing...</span>
+
                 </div>
               ) : (
-                <span>{isLogin ? 'Access Workspace' : 'Initialize Account'}</span>
+                <span>
+                  {isLogin
+                    ? 'Access Workspace'
+                    : 'Initialize Account'}
+                </span>
               )}
+
             </button>
+
           </form>
+
         </div>
 
-        {/* Footer Info */}
+        {/* Footer */}
         <div className="text-center text-[10px] text-gray-400">
-          SHORTX Enterprise Framework © 2026. Powered by Wix Studio Design Core.
+          SHORTX Enterprise Framework © 2026.
+          Powered by Wix Studio Design Core.
         </div>
 
       </div>
+
     </div>
   );
 }
