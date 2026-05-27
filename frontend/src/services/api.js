@@ -9,6 +9,28 @@ const getHeaders = () => {
   };
 };
 
+// Helper function to safely parse JSON responses
+const parseResponse = async (res) => {
+  const contentType = res.headers.get('content-type');
+  
+  if (!res.ok) {
+    // Check if response is JSON before parsing
+    if (contentType && contentType.includes('application/json')) {
+      const errorData = await res.json();
+      throw new Error(errorData.message || `HTTP Error ${res.status}`);
+    } else {
+      throw new Error(`Server error: ${res.status} ${res.statusText}`);
+    }
+  }
+  
+  // For successful responses, parse as JSON
+  if (contentType && contentType.includes('application/json')) {
+    return await res.json();
+  } else {
+    throw new Error('Invalid response format from server');
+  }
+};
+
 export const ApiClient = {
   // --- AUTHENTICATION ENDPOINTS ---
   async login(email, password) {
@@ -17,9 +39,7 @@ export const ApiClient = {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ email, password })
     });
-    const data = await res.json();
-    if (!res.ok) throw new Error(data.message || 'Login failed');
-    return data; 
+    return parseResponse(res);
   },
 
   async signup(email, password) {
@@ -28,9 +48,7 @@ export const ApiClient = {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ email, password })
     });
-    const data = await res.json();
-    if (!res.ok) throw new Error(data.message || 'Signup failed');
-    return data;
+    return parseResponse(res);
   },
 
   // --- SHORT LINK MANAGEMENT ENDPOINTS ---
@@ -39,9 +57,7 @@ export const ApiClient = {
       method: 'GET',
       headers: getHeaders()
     });
-    const data = await res.json();
-    if (!res.ok) throw new Error(data.message || 'Failed to fetch dashboard links');
-    return data; 
+    return parseResponse(res);
   },
 
   async createLink({ longUrl, title, alias }) {
@@ -50,9 +66,7 @@ export const ApiClient = {
       headers: getHeaders(),
       body: JSON.stringify({ longUrl, title, alias })
     });
-    const data = await res.json();
-    if (!res.ok) throw new Error(data.message || 'Failed to create shortened URL');
-    return data;
+    return parseResponse(res);
   },
 
   async deleteLink(id) {
@@ -60,9 +74,7 @@ export const ApiClient = {
       method: 'DELETE',
       headers: getHeaders()
     });
-    const data = await res.json();
-    if (!res.ok) throw new Error(data.message || 'Failed to delete link resource');
-    return data;
+    return parseResponse(res);
   },
 
   // --- VISITOR ANALYTICS BRIDGE ---
@@ -73,8 +85,7 @@ export const ApiClient = {
       method: 'GET',
       headers: getHeaders()
     });
-    const links = await res.json();
-    if (!res.ok) throw new Error('Failed to load link statistics.');
+    const links = await parseResponse(res);
     
     const activeLink = links.find(l => l.id === linkId || l._id === linkId);
     
