@@ -1,16 +1,17 @@
-const mongoose = require('mongoose');
+import mongoose from 'mongoose';
 
 const UserSchema = new mongoose.Schema({
   email: {
     type: String,
     required: true,
-    unique: true, // No two users can have the same email
+    unique: true,
     lowercase: true
   },
   password: {
     type: String,
-    required: true // This will be a hashed string, never plain text!
+    required: true
   }
-}, { timestamps: true }); // Automatically tracks 'createdAt' and 'updatedAt'
+}, { timestamps: true });
 
-module.exports = mongoose.model('User', UserSchema);
+// CHANGE THIS LINE AT THE BOTTOM:
+export default mongoose.model('User', UserSchema);
