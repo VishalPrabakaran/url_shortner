@@ -1,12 +1,14 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { ApiClient } from '../services/api'; // Imported the real API Client
+import { ApiClient } from '../services/api';
 
 import {
   Mail,
   Lock,
   Link2,
   AlertCircle,
+  Eye,
+  EyeOff,
 } from 'lucide-react';
 
 export default function AuthPortal() {
@@ -15,17 +17,15 @@ export default function AuthPortal() {
   const [isLogin, setIsLogin] = useState(true);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
 
-  // Loading & Error states
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
 
-  // Submit Handler
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError('');
 
-    // Front-end validations
     if (!email || !password) {
       setError('Please fill in all email and password fields.');
       return;
@@ -46,19 +46,16 @@ export default function AuthPortal() {
     try {
       let responseData;
 
-      // Connect straight to your updated live backend endpoints
       if (isLogin) {
         responseData = await ApiClient.login(email, password);
       } else {
         responseData = await ApiClient.signup(email, password);
       }
 
-      // Securely store the authentication token returned from your Node server
       if (responseData && responseData.token) {
         localStorage.setItem('token', responseData.token);
       }
 
-      // Redirect directly to your live workspace dashboard
       navigate('/');
     } catch (err) {
       console.error(err);
@@ -84,11 +81,11 @@ export default function AuthPortal() {
             SHORTX
           </h2>
           <p className="mt-1.5 text-[13px] text-[#666666]">
-            Wix Studio Enterprise Custom Link Manager
+            SHORTX Framework Custom Link Manager
           </p>
         </div>
 
-        {/* Card */}
+        {/* Card Container */}
         <div className="rounded-lg border border-[#EAEAEA] bg-white p-8 shadow-sm">
           {/* Tabs */}
           <div className="mb-6 flex border-b border-[#EAEAEA]">
@@ -97,6 +94,7 @@ export default function AuthPortal() {
               onClick={() => {
                 setIsLogin(true);
                 setError('');
+                setShowPassword(false);
               }}
               className={`flex-1 pb-3 text-center text-xs font-bold uppercase tracking-wider transition-all duration-200 ${
                 isLogin
@@ -112,6 +110,7 @@ export default function AuthPortal() {
               onClick={() => {
                 setIsLogin(false);
                 setError('');
+                setShowPassword(false);
               }}
               className={`flex-1 pb-3 text-center text-xs font-bold uppercase tracking-wider transition-all duration-200 ${
                 !isLogin
@@ -123,7 +122,7 @@ export default function AuthPortal() {
             </button>
           </div>
 
-          {/* Error */}
+          {/* Error Banner */}
           {error && (
             <div className="mb-4 flex items-start space-x-2.5 rounded-md border border-red-200 bg-red-50 p-3.5 text-red-800">
               <AlertCircle className="mt-0.5 h-4.5 w-4.5 shrink-0 text-red-600" />
@@ -135,7 +134,7 @@ export default function AuthPortal() {
 
           {/* Form */}
           <form className="space-y-4" onSubmit={handleSubmit}>
-            {/* Email */}
+            {/* Email Field */}
             <div>
               <label className="mb-1.5 block text-[11px] font-bold uppercase tracking-wider text-[#111111]">
                 Email Address
@@ -155,7 +154,7 @@ export default function AuthPortal() {
               </div>
             </div>
 
-            {/* Password */}
+            {/* Password Field with Hide/Show Eye Icon Toggle */}
             <div>
               <label className="mb-1.5 block text-[11px] font-bold uppercase tracking-wider text-[#111111]">
                 Password
@@ -165,61 +164,44 @@ export default function AuthPortal() {
                   <Lock className="h-4 w-4 text-gray-400" />
                 </div>
                 <input
-                  type="password"
+                  type={showPassword ? 'text' : 'password'}
                   required
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   placeholder="••••••••"
-                  className="w-full rounded-md border border-[#EAEAEA] bg-[#F9F9FA] py-2 pl-9 pr-3 text-[13px] text-[#111111] placeholder-gray-400 transition-all duration-200 focus:border-gray-400 focus:bg-white focus:outline-none"
+                  className="w-full rounded-md border border-[#EAEAEA] bg-[#F9F9FA] py-2 pl-9 pr-10 text-[13px] text-[#111111] placeholder-gray-400 transition-all duration-200 focus:border-gray-400 focus:bg-white focus:outline-none"
                 />
+                <button
+                  type="button"
+                  onClick={() => setShowPassword(!showPassword)}
+                  className="absolute inset-y-0 right-0 flex items-center pr-3 text-gray-400 hover:text-[#111111] transition-colors focus:outline-none"
+                >
+                  {showPassword ? (
+                    <EyeOff className="h-4 w-4" />
+                  ) : (
+                    <Eye className="h-4 w-4" />
+                  )}
+                </button>
               </div>
               <p className="mt-1.5 text-[10px] text-[#666666]">
                 Must be at least 6 characters.
               </p>
             </div>
 
-            {/* Submit */}
+            {/* Submit Button */}
             <button
               type="submit"
               disabled={loading}
               className="mt-6 flex w-full items-center justify-center rounded-md bg-[#0057FF] py-2.5 text-xs font-bold uppercase tracking-wider text-white transition-all duration-200 hover:bg-[#0046CC] disabled:opacity-70 focus:outline-none"
             >
-              {loading ? (
-                <div className="flex items-center space-x-2">
-                  <svg
-                    className="h-4 w-4 animate-spin text-white"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                  >
-                    <circle
-                      className="opacity-25"
-                      cx="12"
-                      cy="12"
-                      r="10"
-                      stroke="currentColor"
-                      strokeWidth="4"
-                    />
-                    <path
-                      className="opacity-75"
-                      fill="currentColor"
-                      d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-                    />
-                  </svg>
-                  <span>Processing...</span>
-                </div>
-              ) : (
-                <span>
-                  {isLogin ? 'Access Workspace' : 'Initialize Account'}
-                </span>
-              )}
+              {loading ? 'Processing...' : (isLogin ? 'Access Workspace' : 'Initialize Account')}
             </button>
           </form>
         </div>
 
-        {/* Footer */}
-        <div className="text-center text-[10px] text-gray-400">
-          SHORTX Enterprise Framework © 2026.
-          Powered by Wix Studio Design Core.
+        {/* Footer Minimal Branding */}
+        <div className="text-center text-[10px] text-gray-400 tracking-wide font-medium">
+          SHORTX Framework © 2026
         </div>
       </div>
     </div>
