@@ -1,41 +1,321 @@
-# SHORTX URL Shortener Project Root
+# SHORTX — AI Powered URL Shortener
 
-This project is a React single-page application built using Vite, Tailwind CSS, Recharts, and Lucide Icons. The visual design conforms to the premium Wix Studio enterprise layouts.
+SHORTX is a modern full-stack URL shortening platform that allows users to create, manage, and track shortened URLs with authentication and analytics support.
 
-## Directory Structure
-- **[`frontend/`](file:///c:/Users/Lenovo/Desktop/url_shorter/frontend)**: Vite + React SPA source code.
-- **[`docs/`](file:///c:/Users/Lenovo/Desktop/url_shorter/docs)**: Documentation written for both developers and higher officials.
+The application is built using React, Node.js, Express, and MongoDB with a responsive and modern dashboard interface.
 
-## Documentation Index
-1. **[Executive Summary](file:///c:/Users/Lenovo/Desktop/url_shorter/docs/executive_summary.md)**: Product overview, Wix design system patterns, and value metrics.
-2. **[Architecture Guide](file:///c:/Users/Lenovo/Desktop/url_shorter/docs/architecture.md)**: Details on structure, component hierarchy, state flow, and local fallback database.
-3. **[Setup & Deployment Guide](file:///c:/Users/Lenovo/Desktop/url_shorter/docs/installation.md)**: Environment setup, dependency installation, dev running, and production building.
+---
 
-## Development Startup
-To run the server:
+# Features
+
+* User Authentication (JWT)
+* URL Shortening
+* Custom Alias Support
+* Expiry Date Support
+* Copy to Clipboard
+* Redirect Handling
+* Click Analytics
+* Recent Visit Tracking
+* Responsive Dashboard
+* Secure REST APIs
+
+---
+
+# Tech Stack
+
+| Layer          | Technology                   |
+| -------------- | ---------------------------- |
+| Frontend       | React.js, Vite, Tailwind CSS |
+| Backend        | Node.js, Express.js          |
+| Database       | MongoDB                      |
+| Authentication | JWT                          |
+| Deployment     | Vercel / Render              |
+
+---
+
+# Project Structure
+
+```txt
+```txt
+URL_SHORTENER/
+│
+├── backend/
+│   ├── config/
+│   │   └── db.js
+│   ├── controllers/
+│   │   ├── authController.js
+│   │   ├── linkController.js
+│   │   └── redirectController.js
+│   ├── middleware/
+│   │   └── authMiddleware.js
+│   ├── models/
+│   │   ├── link.js
+│   │   └── user.js
+│   ├── routes/
+│   │   ├── authRoutes.js
+│   │   ├── linkRoutes.js
+│   │   └── redirectRoutes.js
+│   ├── .env.example
+│   ├── package.json
+│   └── server.js
+│
+├── frontend/
+│   ├── public/
+│   ├── src/
+│   │   ├── assets/
+│   │   ├── components/
+│   │   │   ├── ui/
+│   │   │   ├── AnalyticsDrawer.jsx
+│   │   │   ├── AuthPortal.jsx
+│   │   │   ├── DeleteModal.jsx
+│   │   │   ├── HeroSection.jsx
+│   │   │   ├── LinkCard.jsx
+│   │   │   ├── LinkGrid.jsx
+│   │   │   ├── Navbar.jsx
+│   │   │   ├── ProtectedRoute.jsx
+│   │   │   └── ShortenerForm.jsx
+│   │   ├── context/
+│   │   ├── routes/
+│   │   ├── services/
+│   │   │   └── api.js
+│   │   ├── App.jsx
+│   │   ├── index.css
+│   │   └── main.jsx
+│   └── package.json
+│
+├── docs/
+│   ├── AI_PLANNING.md
+│   └── ARCHITECTURE.md
+│   
+├── screenshots/
+│   ├── dashboard.png
+│   ├── login.png
+│   └── analytics.png
+│
+├── README.md
+└── architecture.png
+```
+--
+
+# Setup Instructions
+
+## Prerequisites
+
+* Node.js 18+
+* MongoDB Atlas or Local MongoDB
+* npm
+
+---
+
+# Backend Setup
+
+```bash
+cd backend
+npm install
+```
+
+Create `.env` file inside backend folder:
+
+```env
+PORT=5000
+MONGO_URI=your_mongodb_connection
+JWT_SECRET=your_secret_key
+BASE_URL=http://localhost:5000
+```
+
+Run backend server:
+
+```bash
+npm run dev
+```
+
+---
+
+# Frontend Setup
+
 ```bash
 cd frontend
 npm install
 npm run dev
 ```
-To build for production:
-```bash
-cd frontend
-npm run build
+
+---
+
+# Assumptions Made
+
+* Users must authenticate before managing links.
+* MongoDB is used for persistent storage.
+* Analytics are limited to click counts and visit tracking.
+* Expired links become inaccessible automatically.
+* JWT is used for secure authentication.
+
+---
+
+# AI Planning Document
+
+The application was developed using an AI-assisted workflow.
+
+## Planning Steps
+
+1. Defined project scope and core requirements.
+2. Planned frontend and backend architecture.
+3. Designed MongoDB schemas for users and links.
+4. Created secure REST APIs.
+5. Built responsive dashboard UI.
+6. Added analytics tracking system.
+7. Implemented JWT authentication.
+8. Optimized frontend state management.
+9. Tested redirect and analytics workflows.
+10. Prepared deployment-ready structure.
+
+## AI Tools Used
+
+* ChatGPT
+* Gemini
+* GitHub Copilot
+* Cursor AI
+
+---
+
+# Features Documentation
+
+## Authentication
+
+* User signup
+* User login
+* JWT token authorization
+* Password hashing using bcrypt
+
+## URL Management
+
+* Create short URLs
+* Custom aliases
+* Delete links
+* Copy short URLs
+
+## Analytics
+
+* Click tracking
+* Recent visit records
+* Creation date tracking
+
+---
+
+# Architecture Diagram
+
+(Add architecture image here)
+
+Example:
+
+```txt
+Frontend (React)
+       ↓
+Backend API (Express)
+       ↓
+MongoDB Database
 ```
-To run linting checks:
+
+---
+
+# Screenshots
+
+## Login Page
+
+(Add screenshot)
+
+## Dashboard
+
+(Add screenshot)
+
+## Analytics Section
+
+(Add screenshot)
+
+## Mobile Responsive UI
+
+(Add screenshot)
+
+---
+
+# Sample Outputs
+
+## Backend Logs
+
 ```bash
-cd frontend
-npm run lint
+MongoDB Connected
+Server running on port 5000
+POST /api/auth/login 200
+POST /api/links 201
+GET /abc123 302 Redirect
 ```
-BACKEND:
 
-The Auth Middleware (authMiddleware.js): A protective shield. Before a user can see their dashboard or shorten a link, this component inspects their incoming digital key (JWT Token) to verify exactly who they are.
+## Database Entry
 
-The Link Controller (linkController.js): The dashboard brain. It handles creating random codes (using nanoid), checking if a requested custom alias is already taken, retrieving only the logged-in user's custom links, and deleting links.
+```json
+{
+  "originalUrl": "https://google.com",
+  "shortCode": "abc123",
+  "clicks": 15
+}
+```
 
-The Redirect Controller (redirectController.js): The public engine. When someone hits a shortened link (like http://localhost:5000/xyz), this script looks up the code in the database, registers user details (like browser or timestamp) into the visits array, bumps the clicks counter, and automatically hands off a server-side redirect (302) straight to the original website destination.
+---
 
-[ React Frontend ]              [ Express Router ]             [ Controller Logic ]          [ Database Blueprint ]
-  SignupPage.jsx    ───────>      authRoutes.js     ───────>    authController.js   ───────>       User.js
-  LoginPage.jsx                   (/api/auth/login)               (Validates & Tokens)          (Saves encrypted data)
+# Demo Video
+
+Loom / YouTube Link:
+
+https://your-video-link.com
+
+The video demonstrates:
+
+* Authentication
+* URL creation
+* Custom aliases
+* Expiry dates
+* Redirect functionality
+* Analytics tracking
+* Responsive design
+
+---
+
+# Deployment Plam
+
+## Frontend
+
+Deploy using Vercel.
+
+## Backend
+
+Deploy using Render.
+
+## Database
+
+MongoDB Atlas Cloud Database.
+
+---
+
+# Future Enhancements
+
+* QR code generation
+* Advanced analytics dashboard
+* Password reset
+* Redis caching
+* Rate limiting
+* Team collaboration
+
+---
+
+# Contributing
+
+1. Fork the repository
+2. Create feature branch
+3. Commit changes
+4. Push branch
+5. Open pull request
+
+---
+
+# Hackathon
+
+This project is a part of a hackathon conducted by https://katomaran.com
