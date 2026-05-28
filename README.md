@@ -6,6 +6,20 @@ The application is built using React, Node.js, Express, and MongoDB with a respo
 
 ---
 
+# Live Deployment
+
+## Frontend (Vercel)
+
+Frontend Live URL:
+YOUR_FRONTEND_DEPLOYMENT_LINK
+
+## Backend (Render)
+
+Backend API URL:
+YOUR_BACKEND_DEPLOYMENT_LINK
+
+---
+
 # Features
 
 * User Authentication (JWT)
@@ -29,14 +43,13 @@ The application is built using React, Node.js, Express, and MongoDB with a respo
 | Backend        | Node.js, Express.js          |
 | Database       | MongoDB                      |
 | Authentication | JWT                          |
-| Deployment     | Vercel / Render              |
+| Deployment     | Vercel + Render              |
 
 ---
 
 # Project Structure
 
-```txt
-```txt
+```txt id="x7r2kq"
 URL_SHORTENER/
 │
 ├── backend/
@@ -84,18 +97,27 @@ URL_SHORTENER/
 │   └── package.json
 │
 ├── docs/
-│   ├── AI_PLANNING.md
-│   └── ARCHITECTURE.md
-│   
+│   ├── ai_planning.md
+│   ├── architecture.md
+│   ├── features.md
+│   ├── installation.md
+│   └── planning.md
+│
 ├── screenshots/
-│   ├── dashboard.png
-│   ├── login.png
-│   └── analytics.png
+│   ├── analytics.png
+│   ├── backend.png
+│   ├── dashboard1.png
+│   ├── dashboard2.png
+│   ├── database1.png
+│   ├── database2.png
+│   ├── frontend.png
+│   └── login.png
 │
 ├── README.md
 └── architecture.png
 ```
---
+
+---
 
 # Setup Instructions
 
@@ -109,14 +131,14 @@ URL_SHORTENER/
 
 # Backend Setup
 
-```bash
+```bash id="r3mbho"
 cd backend
 npm install
 ```
 
 Create `.env` file inside backend folder:
 
-```env
+```env id="0p3hso"
 PORT=5000
 MONGO_URI=your_mongodb_connection
 JWT_SECRET=your_secret_key
@@ -125,7 +147,7 @@ BASE_URL=http://localhost:5000
 
 Run backend server:
 
-```bash
+```bash id="sikx3m"
 npm run dev
 ```
 
@@ -133,7 +155,7 @@ npm run dev
 
 # Frontend Setup
 
-```bash
+```bash id="4y7u2r"
 cd frontend
 npm install
 npm run dev
@@ -145,7 +167,7 @@ npm run dev
 
 * Users must authenticate before managing links.
 * MongoDB is used for persistent storage.
-* Analytics are limited to click counts and visit tracking.
+* Analytics are limited to click counts and recent visit tracking.
 * Expired links become inaccessible automatically.
 * JWT is used for secure authentication.
 
@@ -181,37 +203,38 @@ The application was developed using an AI-assisted workflow.
 
 ## Authentication
 
-* User signup
-* User login
-* JWT token authorization
-* Password hashing using bcrypt
+* User Signup
+* User Login
+* JWT Token Authorization
+* Password Hashing using bcrypt
 
 ## URL Management
 
-* Create short URLs
-* Custom aliases
-* Delete links
-* Copy short URLs
+* Create Short URLs
+* Custom Aliases
+* Expiry Date Support
+* Delete Links
+* Copy Short URLs
 
 ## Analytics
 
-* Click tracking
-* Recent visit records
-* Creation date tracking
+* Click Tracking
+* Recent Visit Records
+* Creation Date Tracking
 
 ---
 
 # Architecture Diagram
 
-(Add architecture image here)
+![Architecture Diagram](./architecture.png)
 
-Example:
+Example Flow:
 
-```txt
-Frontend (React)
-       ↓
-Backend API (Express)
-       ↓
+```txt id="c6n4ej"
+Frontend (React + Vite)
+        ↓
+Backend API (Express.js)
+        ↓
 MongoDB Database
 ```
 
@@ -221,19 +244,41 @@ MongoDB Database
 
 ## Login Page
 
-(Add screenshot)
+![Login](screenshots/login.png)
 
-## Dashboard
+---
 
-(Add screenshot)
+## Dashboard UI
 
-## Analytics Section
+![Dashboard](screenshots/dashboard1.png)
 
-(Add screenshot)
+![Dashboard](screenshots/dashboard2.png)
 
-## Mobile Responsive UI
+---
 
-(Add screenshot)
+## Analytics Dashboard
+
+![Analytics](screenshots/analytics.png)
+
+---
+
+## Backend Preview
+
+![Backend](screenshots/backend.png)
+
+---
+
+## Frontend Preview
+
+![Frontend](screenshots/frontend.png)
+
+---
+
+## Database Collections
+
+![Database](screenshots/databse1.png)
+
+![Database](screenshots/databse2.png)
 
 ---
 
@@ -241,7 +286,7 @@ MongoDB Database
 
 ## Backend Logs
 
-```bash
+```bash id="wzv6c3"
 MongoDB Connected
 Server running on port 5000
 POST /api/auth/login 200
@@ -251,7 +296,7 @@ GET /abc123 302 Redirect
 
 ## Database Entry
 
-```json
+```json id="1hq7mr"
 {
   "originalUrl": "https://google.com",
   "shortCode": "abc123",
@@ -263,29 +308,30 @@ GET /abc123 302 Redirect
 
 # Demo Video
 
-Loom / YouTube Link:
+Loom / YouTube Video Link:
 
-https://your-video-link.com
+https://www.loom.com/share/d73fc8782b074fefac8ff77a1034e81f
 
 The video demonstrates:
 
 * Authentication
-* URL creation
-* Custom aliases
-* Expiry dates
-* Redirect functionality
-* Analytics tracking
-* Responsive design
+* URL Creation
+* Custom Aliases
+* Expiry Dates
+* Redirect Functionality
+* Analytics Tracking
+* Responsive Design
+* Deployment Walkthrough
 
 ---
 
-# Deployment Plam
+# Deployment Plan
 
-## Frontend
+## Frontend Deployment
 
 Deploy using Vercel.
 
-## Backend
+## Backend Deployment
 
 Deploy using Render.
 
@@ -297,25 +343,29 @@ MongoDB Atlas Cloud Database.
 
 # Future Enhancements
 
-* QR code generation
-* Advanced analytics dashboard
-* Password reset
-* Redis caching
-* Rate limiting
-* Team collaboration
+* QR Code Generation
+* Advanced Analytics Dashboard
+* Password Reset
+* Redis Caching
+* Rate Limiting
+* Team Collaboration
 
 ---
 
 # Contributing
 
 1. Fork the repository
-2. Create feature branch
+2. Create a feature branch
 3. Commit changes
-4. Push branch
-5. Open pull request
+4. Push the branch
+5. Open a pull request
 
 ---
 
-# Hackathon
+# Hackathon Submission
 
-This project is a part of a hackathon conducted by https://katomaran.com
+This project was developed as part of a hackathon conducted by:
+
+https://katomaran.com
+
+---
