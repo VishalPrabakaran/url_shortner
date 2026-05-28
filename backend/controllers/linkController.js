@@ -1,4 +1,4 @@
-import Link from '../models/Link.js';
+import Link from '../models/link.js';
 import { nanoid } from 'nanoid';
 import validUrl from 'valid-url';
 
