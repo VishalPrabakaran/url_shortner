@@ -1,4 +1,4 @@
-const API_BASE_URL = 'https://shortx-backend.onrender.com';
+const API_BASE_URL = import.meta.env.VITE_API_URL || 'https://shortx-backend.onrender.com/api';
 
 // Helper function to extract headers containing the authorization key safely
 const getHeaders = () => {
