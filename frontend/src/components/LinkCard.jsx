@@ -1,6 +1,8 @@
 import { memo, useRef, useState } from 'react';
 import { Copy, Check, BarChart2, Trash2, Calendar, Download } from 'lucide-react';
 import { QRCodeCanvas } from 'qrcode.react';
+import Button from './ui/Button';
+import Card from './ui/Card';
 
 function LinkCard({ link, onOpenAnalytics, onDeleteClick }) {
   const [copied, setCopied] = useState(false);
@@ -21,19 +23,13 @@ function LinkCard({ link, onOpenAnalytics, onDeleteClick }) {
   };
 
   return (
-    <div className="bg-white border border-[#EAEAEA] rounded-lg p-6 hover:shadow-md transition-all duration-300 flex flex-col justify-between group">
+    <Card className="p-6 flex flex-col justify-between min-h-full">
       <div>
-        {/* Badges & Status */}
-        <div className="flex items-center justify-between mb-3.5">
-          <span className="text-[10px] font-bold text-[#666666] tracking-wider uppercase">
-            Short link
+        <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between mb-4">
+          <span className="text-[10px] font-bold uppercase tracking-wider text-[#666666]">Short link</span>
+          <span className="inline-flex items-center rounded-full bg-blue-50 border border-blue-100 px-2 py-0.5 text-[9px] font-bold uppercase tracking-wide text-[#0057FF]">
+            {clicksCount.toLocaleString()} Clicks
           </span>
-          
-          <div className="flex items-center space-x-1.5">
-            <span className="inline-flex items-center rounded-full bg-blue-50 border border-blue-100 px-2 py-0.5 text-[9px] font-bold text-[#0057FF] uppercase tracking-wide">
-              {clicksCount.toLocaleString()} Clicks
-            </span>
-          </div>
         </div>
 
         {/* Destination & Title */}
@@ -45,18 +41,18 @@ function LinkCard({ link, onOpenAnalytics, onDeleteClick }) {
           {link.longUrl}
         </p>
 
-        {/* Highlighted short url */}
-        <div className="mt-3.5 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+        <div className="mt-3.5 grid gap-4 sm:grid-cols-[1fr_auto] sm:items-center">
           <a
             href={targetUrl}
             target="_blank"
             rel="noopener noreferrer"
-            className="text-[13px] font-bold text-[#0057FF] hover:underline"
+            className="break-all text-[13px] font-bold text-[#0057FF] hover:underline"
           >
             {targetUrl}
           </a>
-          <button
-            type="button"
+          <Button
+            variant="secondary"
+            size="sm"
             onClick={() => {
               if (!qrRef.current) return;
               const canvas = qrRef.current.querySelector('canvas');
@@ -67,11 +63,11 @@ function LinkCard({ link, onOpenAnalytics, onDeleteClick }) {
               linkEl.download = safeFileName;
               linkEl.click();
             }}
-            className="inline-flex items-center justify-center rounded-md border border-[#EAEAEA] bg-white px-2.5 py-1 text-[11px] font-bold uppercase tracking-wider text-gray-600 hover:text-[#111111] hover:border-gray-300 transition-colors"
+            className="justify-center"
           >
-            <Download className="mr-1 h-3.5 w-3.5" />
+            <Download className="mr-2 h-4 w-4" />
             Download QR
-          </button>
+          </Button>
         </div>
 
         <div ref={qrRef} className="mt-4 rounded-xl bg-[#F9FAFB] p-3 inline-block">
@@ -96,54 +92,29 @@ function LinkCard({ link, onOpenAnalytics, onDeleteClick }) {
         </div>
       </div>
 
-      {/* Action Footer */}
-      <div className="mt-6 flex items-center justify-between border-t border-[#EAEAEA] pt-4">
-        <div className="flex space-x-2">
-          {/* Copy Action button with icon swaps */}
-          <button
-            type="button"
+      <div className="mt-6 flex flex-col gap-3 border-t border-[#EAEAEA] pt-4 sm:flex-row sm:items-center sm:justify-between">
+        <div className="flex flex-wrap items-center gap-2">
+          <Button
+            variant={copied ? 'secondary' : 'outline'}
+            size="sm"
             onClick={handleCopy}
-            className={`flex items-center space-x-1.5 px-3 py-1.5 rounded-md text-[11px] font-bold uppercase tracking-wider transition-all duration-200 focus:outline-none ${
-              copied 
-                ? 'bg-green-50 border border-green-200 text-green-700' 
-                : 'bg-white border border-[#EAEAEA] text-gray-500 hover:text-[#111111] hover:border-gray-300'
-            }`}
+            className="gap-2"
           >
-            {copied ? (
-              <>
-                <Check className="h-3.5 w-3.5 stroke-[2.5]" />
-                <span>Copied</span>
-              </>
-            ) : (
-              <>
-                <Copy className="h-3.5 w-3.5 stroke-[2]" />
-                <span>Copy</span>
-              </>
-            )}
-          </button>
+            {copied ? <><Check className="h-4 w-4" /> Copied</> : <><Copy className="h-4 w-4" /> Copy</>}
+          </Button>
 
-          {/* View Insights drawer button */}
-          <button
-            type="button"
-            onClick={() => onOpenAnalytics(link)}
-            className="flex items-center space-x-1.5 px-3 py-1.5 rounded-md bg-white border border-[#EAEAEA] text-gray-500 hover:text-[#111111] hover:border-gray-300 text-[11px] font-bold uppercase tracking-wider transition-colors duration-200 focus:outline-none"
-          >
-            <BarChart2 className="h-3.5 w-3.5 stroke-[2]" />
-            <span>Insights</span>
-          </button>
+          <Button variant="secondary" size="sm" onClick={() => onOpenAnalytics(link)} className="gap-2">
+            <BarChart2 className="h-4 w-4" />
+            Insights
+          </Button>
         </div>
 
-        {/* Delete trash button */}
-        <button
-          type="button"
-          onClick={() => onDeleteClick(link)}
-          aria-label="Delete Link"
-          className="rounded-md p-1.5 text-gray-400 hover:bg-red-50 hover:text-red-600 transition-colors focus:outline-none"
-        >
+        <Button variant="ghost" size="sm" onClick={() => onDeleteClick(link)} className="gap-2 text-red-600 hover:text-red-700">
           <Trash2 className="h-4 w-4" />
-        </button>
+          Delete
+        </Button>
       </div>
-    </div>
+    </Card>
   );
 }
 

@@ -3,8 +3,8 @@ import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import DashboardPage from './routes/DashboardPage';
 import LoginPage from './routes/LoginPage';
 import SignupPage from './routes/SignupPage';
-// 1. IMPORT THE NEW ANALYTICS PAGE (Assumes it's in the same folder)
-import AnalyticsPage from './routes/AnalyticsPage'; 
+import AnalyticsPage from './routes/AnalyticsPage';
+import ProtectedRoute from './components/ProtectedRoute';
 
 export default function App() {
   return (
@@ -12,13 +12,20 @@ export default function App() {
       <Routes>
         <Route
           path="/"
-          element={<DashboardPage />}
+          element={
+            <ProtectedRoute>
+              <DashboardPage />
+            </ProtectedRoute>
+          }
         />
 
-        {/* 2. REGISTER THE ROUTE TO KILL THE "NO ROUTES MATCHED" WARNING */}
         <Route
           path="/analytics"
-          element={<AnalyticsPage />}
+          element={
+            <ProtectedRoute>
+              <AnalyticsPage />
+            </ProtectedRoute>
+          }
         />
 
         <Route

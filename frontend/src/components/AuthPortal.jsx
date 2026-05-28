@@ -1,6 +1,9 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/useAuth';
+import Button from './ui/Button';
+import Input from './ui/Input';
+import Card from './ui/Card';
 
 import {
   Mail,
@@ -61,29 +64,21 @@ export default function AuthPortal() {
   };
 
   return (
-    <div className="bg-wix-grid relative flex min-h-screen items-center justify-center overflow-hidden bg-[#F9F9FA] px-4 py-12 sm:px-6 lg:px-8">
-      {/* Decorative Background */}
+    <div className="relative flex min-h-screen items-center justify-center overflow-hidden bg-[#F9F9FA] px-4 py-12 sm:px-6 lg:px-8">
       <div className="absolute top-1/4 left-1/4 -z-10 h-72 w-72 rounded-full bg-gradient-to-tr from-pink-400 via-teal-300 to-blue-500 opacity-20 blur-3xl" />
       <div className="absolute bottom-1/4 right-1/4 -z-10 h-80 w-80 rounded-full bg-gradient-to-tr from-purple-400 to-indigo-500 opacity-15 blur-3xl" />
 
       <div className="w-full max-w-md space-y-6">
-        {/* Logo */}
         <div className="flex flex-col items-center text-center">
-          <div className="flex h-12 w-12 items-center justify-center rounded bg-[#0057FF] text-white shadow-sm">
+          <div className="flex h-12 w-12 items-center justify-center rounded-full bg-[#0057FF] text-white shadow-sm">
             <Link2 className="h-6 w-6 stroke-[2.5]" />
           </div>
-          <h2 className="mt-4 text-2xl font-extrabold tracking-tight text-[#111111]">
-            SHORTX
-          </h2>
-          <p className="mt-1.5 text-[13px] text-[#666666]">
-            SHORTX Framework Custom Link Manager
-          </p>
+          <h2 className="mt-4 text-2xl font-extrabold tracking-tight text-[#111111]">SHORTX</h2>
+          <p className="mt-1.5 text-[13px] text-[#666666]">SHORTX Framework Custom Link Manager</p>
         </div>
 
-        {/* Card Container */}
-        <div className="rounded-lg border border-[#EAEAEA] bg-white p-8 shadow-sm">
-          {/* Tabs */}
-          <div className="mb-6 flex border-b border-[#EAEAEA]">
+        <Card className="p-8">
+          <div className="mb-6 flex rounded-3xl border border-[#EAEAEA] bg-[#F9F9FA] p-1">
             <button
               type="button"
               onClick={() => {
@@ -91,15 +86,12 @@ export default function AuthPortal() {
                 setError('');
                 setShowPassword(false);
               }}
-              className={`flex-1 pb-3 text-center text-xs font-bold uppercase tracking-wider transition-all duration-200 ${
-                isLogin
-                  ? 'border-b-2 border-[#0057FF] text-[#0057FF]'
-                  : 'text-gray-400 hover:text-[#111111]'
+              className={`flex-1 rounded-3xl py-3 text-xs font-bold uppercase tracking-wider transition-all duration-200 ${
+                isLogin ? 'bg-white text-[#0057FF]' : 'text-gray-400 hover:text-[#111111]'
               }`}
             >
               Sign In
             </button>
-
             <button
               type="button"
               onClick={() => {
@@ -107,94 +99,57 @@ export default function AuthPortal() {
                 setError('');
                 setShowPassword(false);
               }}
-              className={`flex-1 pb-3 text-center text-xs font-bold uppercase tracking-wider transition-all duration-200 ${
-                !isLogin
-                  ? 'border-b-2 border-[#0057FF] text-[#0057FF]'
-                  : 'text-gray-400 hover:text-[#111111]'
+              className={`flex-1 rounded-3xl py-3 text-xs font-bold uppercase tracking-wider transition-all duration-200 ${
+                !isLogin ? 'bg-white text-[#0057FF]' : 'text-gray-400 hover:text-[#111111]'
               }`}
             >
               Create Account
             </button>
           </div>
 
-          {/* Error Banner */}
           {error && (
-            <div className="mb-4 flex items-start space-x-2.5 rounded-md border border-red-200 bg-red-50 p-3.5 text-red-800">
+            <div className="mb-4 flex items-start space-x-2.5 rounded-2xl border border-red-200 bg-red-50 p-3.5 text-red-800">
               <AlertCircle className="mt-0.5 h-4.5 w-4.5 shrink-0 text-red-600" />
-              <div className="text-[12px] font-medium leading-relaxed">
-                {error}
-              </div>
+              <div className="text-[12px] font-medium leading-relaxed">{error}</div>
             </div>
           )}
 
-          {/* Form */}
           <form className="space-y-4" onSubmit={handleSubmit}>
-            {/* Email Field */}
-            <div>
-              <label className="mb-1.5 block text-[11px] font-bold uppercase tracking-wider text-[#111111]">
-                Email Address
-              </label>
-              <div className="relative">
-                <div className="absolute inset-y-0 left-0 flex items-center pl-3">
-                  <Mail className="h-4 w-4 text-gray-400" />
-                </div>
-                <input
-                  type="email"
-                  required
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  placeholder="name@company.com"
-                  className="w-full rounded-md border border-[#EAEAEA] bg-[#F9F9FA] py-2 pl-9 pr-3 text-[13px] text-[#111111] placeholder-gray-400 transition-all duration-200 focus:border-gray-400 focus:bg-white focus:outline-none"
-                />
-              </div>
+            <Input
+              label="Email Address"
+              type="email"
+              icon={<Mail className="h-4 w-4" />}
+              required
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              placeholder="name@company.com"
+            />
+
+            <div className="relative">
+              <Input
+                label="Password"
+                type={showPassword ? 'text' : 'password'}
+                icon={<Lock className="h-4 w-4" />}
+                required
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                placeholder="••••••••"
+              />
+              <button
+                type="button"
+                onClick={() => setShowPassword(!showPassword)}
+                className="absolute right-3 top-10 text-gray-400 hover:text-[#111111] transition-colors"
+              >
+                {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+              </button>
             </div>
 
-            {/* Password Field with Hide/Show Eye Icon Toggle */}
-            <div>
-              <label className="mb-1.5 block text-[11px] font-bold uppercase tracking-wider text-[#111111]">
-                Password
-              </label>
-              <div className="relative">
-                <div className="absolute inset-y-0 left-0 flex items-center pl-3">
-                  <Lock className="h-4 w-4 text-gray-400" />
-                </div>
-                <input
-                  type={showPassword ? 'text' : 'password'}
-                  required
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  placeholder="••••••••"
-                  className="w-full rounded-md border border-[#EAEAEA] bg-[#F9F9FA] py-2 pl-9 pr-10 text-[13px] text-[#111111] placeholder-gray-400 transition-all duration-200 focus:border-gray-400 focus:bg-white focus:outline-none"
-                />
-                <button
-                  type="button"
-                  onClick={() => setShowPassword(!showPassword)}
-                  className="absolute inset-y-0 right-0 flex items-center pr-3 text-gray-400 hover:text-[#111111] transition-colors focus:outline-none"
-                >
-                  {showPassword ? (
-                    <EyeOff className="h-4 w-4" />
-                  ) : (
-                    <Eye className="h-4 w-4" />
-                  )}
-                </button>
-              </div>
-              <p className="mt-1.5 text-[10px] text-[#666666]">
-                Must be at least 6 characters.
-              </p>
-            </div>
-
-            {/* Submit Button */}
-            <button
-              type="submit"
-              disabled={loading}
-              className="mt-6 flex w-full items-center justify-center rounded-md bg-[#0057FF] py-2.5 text-xs font-bold uppercase tracking-wider text-white transition-all duration-200 hover:bg-[#0046CC] disabled:opacity-70 focus:outline-none"
-            >
-              {loading ? 'Processing...' : (isLogin ? 'Access Workspace' : 'Initialize Account')}
-            </button>
+            <Button type="submit" fullWidth disabled={loading}>
+              {loading ? 'Processing…' : isLogin ? 'Access Workspace' : 'Initialize Account'}
+            </Button>
           </form>
-        </div>
+        </Card>
 
-        {/* Footer Minimal Branding */}
         <div className="text-center text-[10px] text-gray-400 tracking-wide font-medium">
           SHORTX Framework © 2026
         </div>

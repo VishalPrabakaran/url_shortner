@@ -5,11 +5,21 @@ import validUrl from 'valid-url';
 // 1. CREATE SHORT URL
 export const createLink = async (req, res) => {
   try {
-    const { longUrl, title, alias } = req.body;
+    const { longUrl, title, alias, expiresAt } = req.body;
 
-    // Validate that input is a proper web URL address
     if (!validUrl.isUri(longUrl)) {
       return res.status(400).json({ message: 'Please provide a valid destination URL structure' });
+    }
+
+    let parsedExpiry;
+    if (expiresAt) {
+      parsedExpiry = new Date(expiresAt);
+      if (Number.isNaN(parsedExpiry.getTime())) {
+        return res.status(400).json({ message: 'Expiration date must be a valid date' });
+      }
+      if (parsedExpiry <= new Date()) {
+        return res.status(400).json({ message: 'Expiration date must be in the future' });
+      }
     }
 
     // Handle Custom Alias checks if the user provided one (Bonus feature support!)
@@ -31,7 +41,8 @@ export const createLink = async (req, res) => {
       title: title || 'Untitled Link',
       longUrl,
       shortCode,
-      alias: alias ? alias.trim() : undefined
+      alias: alias ? alias.trim() : undefined,
+      expiresAt: parsedExpiry
     });
 
     res.status(201).json(newLink);

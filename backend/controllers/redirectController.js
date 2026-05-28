@@ -17,10 +17,20 @@ export const handleRedirect = async (req, res) => {
     else if (/edge/i.test(userAgent)) browser = 'Edge';
 
     // 1. Locate the link object matching either standard code OR the custom alias string
-    const link = await Link.findOneAndUpdate(
-      { $or: [{ shortCode: code }, { alias: code }] },
+    const link = await Link.findOne({ $or: [{ shortCode: code }, { alias: code }] });
+
+    if (!link) {
+      return res.status(404).send('<h1>Error 404: Short link not found or expired</h1>');
+    }
+
+    if (link.expiresAt && new Date(link.expiresAt) <= new Date()) {
+      return res.status(404).send('<h1>Error 404: Short link expired</h1>');
+    }
+
+    const updatedLink = await Link.findByIdAndUpdate(
+      link._id,
       {
-        $inc: { clicks: 1 }, // Atomically bump global click counter metrics
+        $inc: { clicks: 1 },
         $set: { lastVisited: new Date() },
         $push: {
           visits: {
@@ -32,10 +42,6 @@ export const handleRedirect = async (req, res) => {
       },
       { new: true }
     );
-
-    if (!link) {
-      return res.status(404).send('<h1>Error 404: Short link not found or expired</h1>');
-    }
 
     // 2. Perform server-side redirect handling direct to client original web target
     return res.redirect(link.longUrl);

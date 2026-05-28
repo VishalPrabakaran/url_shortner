@@ -1,10 +1,15 @@
 import { useState } from 'react';
-import { Link, ShieldAlert, CheckCircle2 } from 'lucide-react';
+import { Link as LinkIcon, ShieldAlert, CheckCircle2 } from 'lucide-react';
 import { ApiClient } from '../services/api';
+import Button from './ui/Button';
+import Input from './ui/Input';
+import Card from './ui/Card';
 
 export default function ShortenerForm({ onLinkCreated }) {
   const [longUrl, setLongUrl] = useState('');
   const [title, setTitle] = useState('');
+  const [alias, setAlias] = useState('');
+  const [expiresAt, setExpiresAt] = useState('');
   
   // Loading, Errors & Success states
   const [loading, setLoading] = useState(false);
@@ -31,12 +36,16 @@ export default function ShortenerForm({ onLinkCreated }) {
     try {
       const newLink = await ApiClient.createLink({
         longUrl,
-        title: title || 'Untitled Link'
+        title: title || 'Untitled Link',
+        alias: alias?.trim() || undefined,
+        expiresAt: expiresAt || undefined,
       });
 
       onLinkCreated(newLink);
       setLongUrl('');
       setTitle('');
+      setAlias('');
+      setExpiresAt('');
       setSuccessMsg(`Successfully generated! Short URL: "${newLink.shortUrl}"`);
       setTimeout(() => setSuccessMsg(''), 5000);
     } catch (err) {
@@ -48,64 +57,68 @@ export default function ShortenerForm({ onLinkCreated }) {
 
   return (
     <div className="mx-auto max-w-3xl px-4 sm:px-6 lg:px-8 -mt-8 relative z-10">
-      <div className="bg-white border border-[#E0E0E0] rounded-lg p-6 sm:p-8 shadow-sm">
-
+      <Card className="p-6 sm:p-8">
         {error && (
-          <div className="mb-4 flex items-start space-x-2.5 border border-red-200 bg-red-50 p-3.5 text-red-800 rounded-md">
+          <div className="mb-4 flex items-start space-x-2.5 rounded-md border border-red-200 bg-red-50 p-3.5 text-red-800">
             <ShieldAlert className="mt-0.5 h-4.5 w-4.5 shrink-0 text-red-600" />
             <span className="text-[12px] font-medium leading-relaxed">{error}</span>
           </div>
         )}
 
         {successMsg && (
-          <div className="mb-4 flex items-start space-x-2.5 border border-green-200 bg-green-50 p-3.5 text-green-800 rounded-md">
+          <div className="mb-4 flex items-start space-x-2.5 rounded-md border border-green-200 bg-green-50 p-3.5 text-green-800">
             <CheckCircle2 className="mt-0.5 h-4.5 w-4.5 shrink-0 text-green-600" />
             <span className="text-[12px] font-medium leading-relaxed">{successMsg}</span>
           </div>
         )}
 
         <form onSubmit={handleSubmit} className="space-y-4">
-          <div className="grid gap-4 sm:grid-cols-[1.6fr_1fr]">
-            <div className="relative">
-              <div className="absolute inset-y-0 left-0 flex items-center pl-3">
-                <Link className="h-4 w-4 text-gray-400" />
-              </div>
-              <input
-                type="text"
-                required
-                value={longUrl}
-                onChange={(e) => setLongUrl(e.target.value)}
-                placeholder="Enter long destination URL (e.g. https://example.com/pages/etc)"
-                className="w-full rounded-md border border-[#E0E0E0] bg-[#FAFAFA] py-2.5 pl-9 pr-3 text-[13px] text-[#1F1F1F] placeholder-gray-500 transition-all duration-200 focus:border-[#0057FF] focus:bg-white focus:outline-none focus:ring-1 focus:ring-[#0057FF]"
-              />
-            </div>
-
-            <button
-              type="submit"
-              disabled={loading}
-              className="rounded-md bg-[#0057FF] px-6 py-2.5 text-xs font-bold uppercase tracking-wider text-white transition-all duration-200 hover:bg-[#0046CC] disabled:opacity-60 focus:outline-none flex items-center justify-center"
-            >
-              {loading ? 'Generating...' : 'Generate Short Link'}
-            </button>
+          <div className="grid gap-4 lg:grid-cols-[2fr_1fr]">
+            <Input
+              type="url"
+              label="Destination URL"
+              icon={<LinkIcon className="h-4 w-4" />}
+              required
+              value={longUrl}
+              onChange={(e) => setLongUrl(e.target.value)}
+              placeholder="https://example.com/path"
+            />
+            <Button type="submit" fullWidth disabled={loading}>
+              {loading ? 'Generating…' : 'Generate Short Link'}
+            </Button>
           </div>
 
-          <div>
-            <label className="block text-[11px] font-bold uppercase tracking-wider text-[#1F1F1F] mb-1">
-              Link Title (optional)
-            </label>
-            <input
-              type="text"
+          <div className="grid gap-4 lg:grid-cols-2">
+            <Input
+              label="Link Title (optional)"
               value={title}
               onChange={(e) => setTitle(e.target.value)}
               placeholder="e.g., My Portfolio Website"
-              className="w-full rounded-md border border-[#E0E0E0] bg-[#FAFAFA] py-2 px-3 text-[13px] text-[#1F1F1F] placeholder-gray-500 transition-all duration-200 focus:border-[#0057FF] focus:bg-white focus:outline-none focus:ring-1 focus:ring-[#0057FF]"
             />
-            <p className="mt-2 text-[10px] text-[#6B7280]">
-              Title helps identify your link. If left blank, it will be saved as “Untitled Link”.
-            </p>
+            <Input
+              label="Custom Alias (optional)"
+              value={alias}
+              onChange={(e) => setAlias(e.target.value)}
+              placeholder="custom-alias"
+            />
+          </div>
+
+          <div className="grid gap-4 lg:grid-cols-2">
+            <Input
+              label="Expiration Date (optional)"
+              type="date"
+              value={expiresAt}
+              onChange={(e) => setExpiresAt(e.target.value)}
+            />
+            <div className="space-y-2">
+              <span className="text-[11px] font-bold uppercase tracking-wider text-[#111111]">Notes</span>
+              <p className="text-[11px] text-[#6B7280] leading-relaxed">
+                Add a custom alias for easy sharing. If an expiration date is set, the short link will stop redirecting after that date.
+              </p>
+            </div>
           </div>
         </form>
-      </div>
+      </Card>
     </div>
   );
 }

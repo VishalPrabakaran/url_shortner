@@ -16,6 +16,7 @@ const LinkSchema = new mongoose.Schema({
   longUrl: { type: String, required: true },
   shortCode: { type: String, required: true, unique: true },
   alias: { type: String, unique: true, sparse: true },
+  expiresAt: { type: Date },
   clicks: { type: Number, default: 0 },
   visits: [VisitSchema]
 }, { 

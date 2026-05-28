@@ -60,11 +60,15 @@ export const ApiClient = {
     return parseResponse(res);
   },
 
-  async createLink({ longUrl, title }) {
+  async createLink({ longUrl, title, alias, expiresAt }) {
+    const body = { longUrl, title };
+    if (alias) body.alias = alias;
+    if (expiresAt) body.expiresAt = expiresAt;
+
     const res = await fetch(`${API_BASE_URL}/links`, {
       method: 'POST',
       headers: getHeaders(),
-      body: JSON.stringify({ longUrl, title })
+      body: JSON.stringify(body)
     });
     return parseResponse(res);
   },

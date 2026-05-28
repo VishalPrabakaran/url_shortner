@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../context/useAuth';
 import { Search, Globe, LogOut, Link2, User, ChevronDown } from 'lucide-react';
+import Button from './ui/Button';
 
 export default function Navbar({ searchTerm, setSearchTerm }) {
   const { user, logout } = useAuth();
@@ -94,8 +95,9 @@ export default function Navbar({ searchTerm, setSearchTerm }) {
           {user ? (
             <div className="relative">
               <button
+                type="button"
                 onClick={() => setIsProfileOpen((prev) => !prev)}
-                className="flex items-center space-x-2 rounded-md border border-[#EAEAEA] bg-white px-3 py-1.5 text-sm text-[#111111] hover:bg-gray-50 transition-colors"
+                className="flex items-center space-x-2 rounded-full border border-[#EAEAEA] bg-white px-3 py-1.5 text-sm text-[#111111] hover:bg-gray-50 transition-colors"
               >
                 <div className="flex h-7 w-7 items-center justify-center rounded-full bg-[#0057FF] text-white">
                   <User className="h-4 w-4" />
@@ -104,28 +106,25 @@ export default function Navbar({ searchTerm, setSearchTerm }) {
               </button>
 
               {isProfileOpen && (
-                <div className="absolute right-0 mt-2 w-72 rounded-xl border border-[#EAEAEA] bg-white shadow-lg p-4 text-sm">
-                  <div className="mb-3 border-b border-[#F3F4F6] pb-3">
+                <div className="absolute right-0 mt-2 w-72 rounded-3xl border border-[#EAEAEA] bg-white p-4 shadow-lg">
+                  <div className="mb-4 border-b border-[#F3F4F6] pb-3">
                     <p className="text-xs uppercase tracking-wider text-gray-400">Profile</p>
                     <p className="mt-2 text-[13px] font-semibold text-[#111111] break-all">{user.email}</p>
                     <p className="mt-1 text-[12px] text-[#666666]">Joined: {formatDate(user.createdAt)}</p>
                   </div>
-                  <button
-                    onClick={handleLogout}
-                    className="w-full rounded-md bg-[#111111] px-3 py-2 text-[12px] font-semibold text-white transition-colors hover:bg-[#333333]"
-                  >
+                  <Button fullWidth onClick={handleLogout}>
                     Sign Out
-                  </button>
+                  </Button>
                 </div>
               )}
             </div>
           ) : (
-            <div className="flex items-center space-x-1 sm:space-x-2">
-              <Link to="/login" className="rounded-md px-2 py-1 text-[11px] sm:text-[12px] font-bold text-[#666666] hover:text-[#111111] transition-colors">
-                Login
+            <div className="flex items-center space-x-2">
+              <Link to="/login">
+                <Button variant="outline" size="sm">Login</Button>
               </Link>
-              <Link to="/signup" className="rounded-md bg-[#0057FF] px-2.5 py-1 text-[11px] sm:text-[12px] font-bold text-white hover:bg-[#0046CC] transition-colors">
-                Sign Up
+              <Link to="/signup">
+                <Button size="sm">Sign Up</Button>
               </Link>
             </div>
           )}

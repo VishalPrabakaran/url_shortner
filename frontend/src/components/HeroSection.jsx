@@ -10,7 +10,7 @@ export default function HeroSection() {
         {/* Decorative Badge */}
         <div className="inline-flex items-center space-x-1.5 rounded-full border border-blue-200 bg-blue-50 px-3.5 py-1 text-[11px] font-semibold text-[#0057FF] mb-6">
           <span className="h-1.5 w-1.5 rounded-full bg-[#0057FF] animate-pulse"></span>
-          <span>Enterprise Version 4.2 Active</span>
+          <span>Active</span>
         </div>
 
         {/* Large Typography Block */}
