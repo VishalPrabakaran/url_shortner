@@ -11,12 +11,12 @@ The application is built using React, Node.js, Express, and MongoDB with a respo
 ## Frontend (Vercel)
 
 Frontend Live URL:
-YOUR_FRONTEND_DEPLOYMENT_LINK
+https://vercel.com/vishalp2836-1760s-projects/url-shortner/H2MajDE8i5Sp4newExXNpYhSWHrL
 
 ## Backend (Render)
 
 Backend API URL:
-YOUR_BACKEND_DEPLOYMENT_LINK
+https://shortx-backend-pk5j.onrender.com
 
 ---
 
