@@ -30,7 +30,11 @@ export const signup = async (req, res) => {
 
     res.status(201).json({
       token: generateToken(newUser._id),
-      user: { id: newUser._id, email: newUser.email }
+      user: {
+        id: newUser._id,
+        email: newUser.email,
+        createdAt: newUser.createdAt
+      }
     });
   } catch (error) {
     res.status(500).json({ message: 'Error creating user', error: error.message });
@@ -56,7 +60,11 @@ export const login = async (req, res) => {
 
     res.status(200).json({
       token: generateToken(user._id),
-      user: { id: user._id, email: user.email }
+      user: {
+        id: user._id,
+        email: user.email,
+        createdAt: user.createdAt
+      }
     });
   } catch (error) {
     res.status(500).json({ message: 'Error logging in', error: error.message });

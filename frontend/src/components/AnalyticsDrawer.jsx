@@ -26,7 +26,7 @@ export default function AnalyticsDrawer({ isOpen, onClose, link }) {
     };
 
     fetchAnalytics();
-  }, [isOpen, link]);
+  }, [isOpen, link?.id]);
 
   if (!isOpen) return null;
 

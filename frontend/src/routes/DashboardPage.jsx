@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo, useRef } from 'react';
 
 import Navbar from '../components/Navbar';
 import HeroSection from '../components/HeroSection';
@@ -13,12 +13,30 @@ export default function DashboardPage() {
   const [links, setLinks] = useState([]);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
-  
+  const prevLinksRef = useRef([]);
+
   // Track ONLY the ID to ensure your analytics view re-evaluates 
   // correctly during live background refreshes
   const [selectedAnalyticsLinkId, setSelectedAnalyticsLinkId] = useState(null);
   const [deleteModalOpen, setDeleteModalOpen] = useState(false);
   const [selectedDeleteLink, setSelectedDeleteLink] = useState(null);
+
+  const areLinksEqual = (prev, next) => {
+    if (!Array.isArray(prev) || !Array.isArray(next) || prev.length !== next.length) {
+      return false;
+    }
+
+    return prev.every((item, index) => {
+      const nextItem = next[index];
+      return (
+        item.id === nextItem.id &&
+        item.title === nextItem.title &&
+        item.longUrl === nextItem.longUrl &&
+        item.shortUrl === nextItem.shortUrl &&
+        item.clicks === nextItem.clicks
+      );
+    });
+  };
 
   useEffect(() => {
     const fetchLinks = async (showLoader = false) => {
@@ -28,7 +46,12 @@ export default function DashboardPage() {
         }
 
         const data = await ApiClient.getLinks();
-        setLinks(data || []);
+        const nextLinks = data || [];
+
+        if (!areLinksEqual(prevLinksRef.current, nextLinks)) {
+          prevLinksRef.current = nextLinks;
+          setLinks(nextLinks);
+        }
       } catch (err) {
         console.error(err);
       } finally {
@@ -38,10 +61,8 @@ export default function DashboardPage() {
       }
     };
 
-    // Initial page load
     fetchLinks(true);
 
-    // Auto refresh every 3 seconds
     const interval = setInterval(() => {
       fetchLinks(false);
     }, 3000);
@@ -54,7 +75,7 @@ export default function DashboardPage() {
   };
 
   const handleOpenAnalytics = (link) => {
-    setSelectedAnalyticsLinkId(link.id);
+    setSelectedAnalyticsLinkId(link.id || link._id);
   };
 
   const handleDeleteClick = (link) => {
@@ -82,19 +103,22 @@ export default function DashboardPage() {
     }
   };
 
-  const filteredLinks = links.filter((link) => {
+  const filteredLinks = useMemo(() => {
     const query = searchTerm.toLowerCase();
 
-    return (
+    return links.filter((link) =>
       link.title?.toLowerCase().includes(query) ||
       link.longUrl?.toLowerCase().includes(query) ||
       link.shortUrl?.toLowerCase().includes(query) ||
       link.alias?.toLowerCase().includes(query)
     );
-  });
+  }, [links, searchTerm]);
 
-  // Derived State: Always points to the newest data version downloaded from interval polling
-  const liveAnalyticsLink = links.find(l => l.id === selectedAnalyticsLinkId) || null;
+  // Derived state is memoized so analytics only refresh when the selected link id changes.
+  const liveAnalyticsLink = useMemo(
+    () => links.find((l) => l.id === selectedAnalyticsLinkId) || null,
+    [links, selectedAnalyticsLinkId]
+  );
 
   return (
     <div className="min-h-screen bg-[#F9F9FA]">

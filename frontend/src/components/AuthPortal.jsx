@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { ApiClient } from '../services/api';
+import { useAuth } from '../context/useAuth';
 
 import {
   Mail,
@@ -13,6 +13,7 @@ import {
 
 export default function AuthPortal() {
   const navigate = useNavigate();
+  const { login, signup } = useAuth();
 
   const [isLogin, setIsLogin] = useState(true);
   const [email, setEmail] = useState('');
@@ -44,16 +45,10 @@ export default function AuthPortal() {
     setLoading(true);
 
     try {
-      let responseData;
-
       if (isLogin) {
-        responseData = await ApiClient.login(email, password);
+        await login(email, password);
       } else {
-        responseData = await ApiClient.signup(email, password);
-      }
-
-      if (responseData && responseData.token) {
-        localStorage.setItem('token', responseData.token);
+        await signup(email, password);
       }
 
       navigate('/');

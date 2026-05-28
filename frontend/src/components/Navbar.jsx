@@ -1,9 +1,11 @@
+import { useState } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../context/useAuth';
-import { Search, Globe, LogOut, Link2 } from 'lucide-react';
+import { Search, Globe, LogOut, Link2, User, ChevronDown } from 'lucide-react';
 
 export default function Navbar({ searchTerm, setSearchTerm }) {
   const { user, logout } = useAuth();
+  const [isProfileOpen, setIsProfileOpen] = useState(false);
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -12,19 +14,27 @@ export default function Navbar({ searchTerm, setSearchTerm }) {
   const handleLogout = async () => {
     try {
       await logout();
+      setIsProfileOpen(false);
       navigate('/login');
     } catch (err) {
       console.error('Logout failed:', err);
     }
   };
 
+  const formatDate = (value) => {
+    if (!value) return 'Unknown';
+    return new Date(value).toLocaleDateString('en-US', {
+      month: 'short',
+      day: 'numeric',
+      year: 'numeric'
+    });
+  };
+
   return (
     <header className="sticky top-0 z-40 w-full border-b border-[#EAEAEA] bg-white/95 backdrop-blur-sm">
       <div className="mx-auto flex h-14 max-w-7xl items-center justify-between px-3 sm:px-6 lg:px-8 gap-1 sm:gap-4">
 
-        {/* LEFT SIDE: Brand & Navigation Links */}
         <div className="flex items-center space-x-2 sm:space-x-6 min-w-0">
-          {/* Brand */}
           <Link to="/" className="flex shrink-0 items-center space-x-1">
             <div className="flex h-7 w-7 items-center justify-center rounded bg-[#0057FF] text-white shadow-sm">
               <Link2 className="h-4 w-4 stroke-[2.5]" />
@@ -34,7 +44,6 @@ export default function Navbar({ searchTerm, setSearchTerm }) {
             </span>
           </Link>
 
-          {/* Navigation - Ultra Compact & Smooth on Mobile */}
           <nav className="flex items-center space-x-2 sm:space-x-4 text-[11px] sm:text-[13px] font-bold text-[#666666]">
             {[
               { label: 'Dashboard', path: '/' },
@@ -44,8 +53,8 @@ export default function Navbar({ searchTerm, setSearchTerm }) {
                 key={item.label}
                 to={item.path}
                 className={`relative py-1 transition-colors duration-200 shrink-0 ${
-                  isActive(item.path) 
-                    ? 'text-[#0057FF] after:w-full' 
+                  isActive(item.path)
+                    ? 'text-[#0057FF] after:w-full'
                     : 'hover:text-[#111111] after:w-0'
                 } after:absolute after:bottom-0 after:left-0 after:h-[2px] after:bg-[#0057FF] hover:after:w-full after:transition-all after:duration-300`}
               >
@@ -55,9 +64,7 @@ export default function Navbar({ searchTerm, setSearchTerm }) {
           </nav>
         </div>
 
-        {/* RIGHT SIDE: Utilities & Session Controls */}
         <div className="flex items-center space-x-1 sm:space-x-4 shrink-0">
-          {/* Search Input */}
           {user && (
             <div className="relative hidden sm:block w-36 md:w-48 lg:w-64">
               <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-2.5">
@@ -73,7 +80,6 @@ export default function Navbar({ searchTerm, setSearchTerm }) {
             </div>
           )}
 
-          {/* Language Selector */}
           <button
             type="button"
             aria-label="Language Selector"
@@ -85,25 +91,33 @@ export default function Navbar({ searchTerm, setSearchTerm }) {
 
           <span className="h-4 w-px bg-gray-200 hidden sm:block"></span>
 
-          {/* AUTH SECTION */}
           {user ? (
-            <div className="flex items-center space-x-2">
-              <div className="hidden xl:flex flex-col text-right">
-                <span className="text-[11px] font-bold text-[#111111] leading-none">
-                  {user?.name || 'MEMBER'}
-                </span>
-                <span className="text-[9px] text-[#666666] leading-none mt-0.5">
-                  {user?.role || 'Enterprise'}
-                </span>
-              </div>
-
+            <div className="relative">
               <button
-                onClick={handleLogout}
-                className="flex items-center space-x-1 rounded-md border border-[#111111] bg-[#111111] px-2 py-1 text-[11px] font-semibold text-white transition-all duration-200 hover:bg-white hover:text-[#111111]"
+                onClick={() => setIsProfileOpen((prev) => !prev)}
+                className="flex items-center space-x-2 rounded-md border border-[#EAEAEA] bg-white px-3 py-1.5 text-sm text-[#111111] hover:bg-gray-50 transition-colors"
               >
-                <LogOut className="h-3 w-3" />
-                <span>Sign Out</span>
+                <div className="flex h-7 w-7 items-center justify-center rounded-full bg-[#0057FF] text-white">
+                  <User className="h-4 w-4" />
+                </div>
+                <ChevronDown className={`h-4 w-4 transition-transform ${isProfileOpen ? 'rotate-180' : ''}`} />
               </button>
+
+              {isProfileOpen && (
+                <div className="absolute right-0 mt-2 w-72 rounded-xl border border-[#EAEAEA] bg-white shadow-lg p-4 text-sm">
+                  <div className="mb-3 border-b border-[#F3F4F6] pb-3">
+                    <p className="text-xs uppercase tracking-wider text-gray-400">Profile</p>
+                    <p className="mt-2 text-[13px] font-semibold text-[#111111] break-all">{user.email}</p>
+                    <p className="mt-1 text-[12px] text-[#666666]">Joined: {formatDate(user.createdAt)}</p>
+                  </div>
+                  <button
+                    onClick={handleLogout}
+                    className="w-full rounded-md bg-[#111111] px-3 py-2 text-[12px] font-semibold text-white transition-colors hover:bg-[#333333]"
+                  >
+                    Sign Out
+                  </button>
+                </div>
+              )}
             </div>
           ) : (
             <div className="flex items-center space-x-1 sm:space-x-2">
@@ -116,7 +130,6 @@ export default function Navbar({ searchTerm, setSearchTerm }) {
             </div>
           )}
         </div>
-
       </div>
     </header>
   );
