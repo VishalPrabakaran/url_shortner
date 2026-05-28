@@ -11,7 +11,7 @@ The application is built using React, Node.js, Express, and MongoDB with a respo
 ## Frontend (Vercel)
 
 Frontend Live URL:
-https://vercel.com/vishalp2836-1760s-projects/url-shortner/H2MajDE8i5Sp4newExXNpYhSWHrL
+https://url-shortner-chi-rouge.vercel.app
 
 ## Backend (Render)
 
