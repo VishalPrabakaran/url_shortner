@@ -1,4 +1,4 @@
-const API_BASE_URL = 'http://localhost:5000/api';
+const API_BASE_URL = 'https://shortx-backend.onrender.com';
 
 // Helper function to extract headers containing the authorization key safely
 const getHeaders = () => {
